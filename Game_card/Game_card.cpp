@@ -666,34 +666,6 @@ void PrintUser(const User& user) {
     wcout << "Win games: " << user.win_count << endl;
 }
 
-int Registration_User(User &user) {
-    int registr = 0;
-    bool userexist = false;
-
-    while (registr != 2) {
-        registr = startLOG();
-        system("cls");
-        switch (registr) {
-        case 0:
-            user = registerNewUser();
-            saveUser(user);
-            userexist = true;
-            break;
-        case 1:
-            user = loginUser();
-            userexist = true;
-            break;
-        case 2:
-            return registr;
-        default:
-            break;
-        }
-        if (userexist) {
-            system("cls");
-            break;
-        }
-    }
-}
 
 int main() {
     ConsoleCursorVisible(false, 1);
