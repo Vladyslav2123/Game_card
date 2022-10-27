@@ -96,7 +96,6 @@ int choise(Game_card*& card, int& size) {
         print(*card, i, x, y);
         x += 9;
     }*/
-
     while (true)
     {
         x = 0;

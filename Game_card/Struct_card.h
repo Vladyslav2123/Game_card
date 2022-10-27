@@ -9,6 +9,7 @@ struct Game_card {
     char card;
     wchar_t suit;
     int value;
+    short color;
 };
 
 Game_card* Desk();
