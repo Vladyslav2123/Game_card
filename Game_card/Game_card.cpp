@@ -24,7 +24,7 @@ void Shuffle(Game_card& deck, int& size) {
     }
 }
 
-void MoveCard(Game_card*& Move_to, Game_card*& Move_from, int& size_to, int& size_from, int& pos) {
+void MoveCard(Game_card*& Move_to, Game_card*& Move_from, int& size_to, int& size_from, int pos) {
     int how = 1;
     Game_card* arr_to = new Game_card[size_to + how];
     Game_card* arr_from = new Game_card[size_from - how];
@@ -249,60 +249,44 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
             SetCursorPosition(1, 14);
             wcout << "Bot move!";
             x = 1;
+            
             for ( i = 0; i < size_table; i++) {
                 for (int k = 0; k < size_bot; k++) {
                     if (bot[k].suit == table_player[i].suit && bot[k].value > table_player[i].value) {
                         min = k;
                         min_card = bot[k].value;
-                        for (int j = k; j < size_bot; j++) {
-                            if (bot[j].suit == table_player[i].suit && min_card >= bot[j].value && bot[j].value > table_player[i].value) {
-                                min = j;
-                                min_card = bot[j].value;
+                        for (int r = k; r < size_bot; r++) {
+                            if (bot[r].suit == table_player[i].suit && min_card >= bot[r].value && bot[r].value > table_player[i].value) {
+                                min = r;
+                                min_card = bot[r].value;
                             }
                         }
                         MoveCard(table_bot, bot, size_table_bot, size_bot, min);
                         break;
                     }
                 }
-            }
-            if (size_table_bot == size_table) {
-                x = 0;
-                y = 23;
-                SetCursorPosition(x, y);
-                for (int i = 0; i < size_bot; i++) {
-                    print(*bot, i, x, y);
-                    x += 9;
-                }
-                x = 0;
-                int p = 0;
-                for (i = 0; i < size_table; i++) {
-                    y = 8;
-                    print(*table_player, i, x, y);
-                    x += 9;
-                    y = 15;
-                    print(*table_bot, i, p, y);
-                    p += 9;
-                }
-                _getch();
-                goto end;
-            }
-            for (i = 0; i < size_table; i++) {
-                for (int j = 0; j < size_bot; j++) {
-                    if (bot[j].suit != table_player[i].suit && bot[j].suit == trump[0].suit) {
-                        min = j;
-                        min_card = bot[j].value;
-                        for (int k = j; k < size_bot; k++) {
-                            if (bot[k].suit != table_player[i].suit && bot[k].suit == trump[0].suit && min_card >= bot[k].value)
-                            {
-                                min = k;
-                                min_card = bot[k].value;
+                if (size_table_bot != size_table) {
+                    for (int l = 0; l < size_bot; l++) {
+                        if (bot[l].suit == trump[0].suit) {
+                            min = l;
+                            min_card = bot[l].value;
+                            for (int f = l; f < size_bot; f++) {
+                                if (bot[f].suit == trump[0].suit && min_card >= bot[f].value)
+                                {
+                                    min = f;
+                                    min_card = bot[f].value;
+                                }
                             }
+                            MoveCard(table_bot, bot, size_table_bot, size_bot, min);
+                            break;
                         }
-                        MoveCard(table_bot, bot, size_table_bot,size_bot, min);
-                        break;
                     }
                 }
+                if (i == size_table_bot) {
+                    break;
+                }
             }
+
             if (size_table_bot == size_table) {
                 x = 0;
                 y = 23;
@@ -325,6 +309,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                 _getch();
                 goto end;
             }
+
             SetCursorPosition(1, 16);
             wcout << "Bot take.";
             system("pause");
