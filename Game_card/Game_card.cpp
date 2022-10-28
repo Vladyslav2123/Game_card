@@ -99,19 +99,32 @@ int choise(Game_card *&card, int &size) {
                 if (activeOption > 0) {
                     activeOption--;
                 }
-                for ( i = 0; i < size; i++) {
-                    print(*card, i, x, y, activeOption == i);
-                    
-                    x += 9;
+                for ( i = 0; i < size+1; i++) {
+                    if (i < size){
+                        print(*card, i, x, y, activeOption == i);
+                        x += 9;
+                    }
+                    else {
+                        SetCursorPosition(x,y);
+                        setMenuRowColor(activeOption == i);
+                        wcout << "END";
+                    }
                 }
                 break;
             case RIGHT_ARROW:
-                if (activeOption < size-1) {
+                if (activeOption < size) {
                     activeOption++;
                 }
-                for ( i = 0; i < size; i++) {
-                    print(*card, i, x, y, activeOption == i);
-                    x += 9;
+                for ( i = 0; i < size+1; i++) {
+                    if (i < size) {
+                        print(*card, i, x, y, activeOption == i);
+                        x += 9;
+                    }
+                    else {
+                        SetCursorPosition(x, y);
+                        setMenuRowColor(activeOption == i);
+                        wcout << "END";
+                    }
                 }
                 break;
             case ENTER:
@@ -186,7 +199,8 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
         }
         do {
             do {
-                repit:
+            repit:
+                SetColor(WHITE, BLACK);
                 SetCursorPosition(55, 15);
                 wcout << "Number of card: " << size_deck;
                 SetCursorPosition(0, 0);
@@ -200,13 +214,11 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                     print(*players, i, x, y);
                     x += 9;
                 }
-                SetCursorPosition(0, 30);
-                wcout << "Enter to continue(1) or Break(0): " << endl;
-                cin >> select;
-                if (select == 0) {
+                
+                number_of_card = choise(players, size_player); 
+                if (number_of_card > (size_player-1)) {
                     goto play;
                 }
-                number_of_card = choise(players, size_player); 
                 for (i = 0; i < size_table; i++) {
                     if (players[number_of_card].value != table_player[i].value) {
                         goto repit;
@@ -215,7 +227,6 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                 x = 0;
                 y = 8;
                 MoveCard(table_player, players, size_table, size_player, number_of_card);
-                SetColor(RED, WHITE);
                 for (int i = 0; i < size_table; i++) {
                     print(*table_player, i, x, y);
                     x += 9;
@@ -225,6 +236,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
 
         play:
         if (size_player != 0 || size_bot != 0) {
+            SetColor(WHITE,BLACK);
             SetCursorPosition(0, 22);
             wcout << "Bot's card: " << endl;
             SetCursorPosition(1, 14);
@@ -249,6 +261,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
             if (size_table_bot == size_table) {
                 x = 0;
                 y = 23;
+                SetColor(WHITE, BLACK);
                 SetCursorPosition(x, y);
                 for (int i = 0; i < size_bot; i++) {
                     print(*bot, i, x, y);
@@ -287,6 +300,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
             if (size_table_bot == size_table) {
                 x = 0;
                 y = 23;
+                SetColor(WHITE, BLACK);
                 SetCursorPosition(x, y);
                 for (int i = 0; i < size_bot; i++) {
                     print(*bot, i, x, y);
@@ -305,6 +319,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                 _getch();
                 goto end;
             }
+            SetColor(WHITE, BLACK);
             SetCursorPosition(1, 16);
             wcout << "Bot take.";
             Sleep(50);
@@ -451,9 +466,11 @@ void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_b
         do {
             
         start:
+
             contin = false;
             SetCursorPosition(60, 8);
             print(*trump, size_trump, 60, 8);
+            ResetColor();
             SetCursorPosition(55, 15);
             wcout << "Number of card: " << size_deck;
             SetCursorPosition(0, 0);
@@ -633,11 +650,11 @@ int main() {
     _setmode(_fileno(stdout), _O_U16TEXT);
     User user;
     int menuOption = 0;
-    int registr = Registration_User(user);
+    /*int registr = Registration_User(user);
 
     if (registr == 2) {
         return 0;
-    }
+    }*/
 
     do {
         SIZE = 36;
