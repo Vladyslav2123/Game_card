@@ -265,9 +265,9 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                         break;
                     }
                 }
-                if (size_table_bot != size_table) {
+                if (i == size_table_bot) {
                     for (int l = 0; l < size_bot; l++) {
-                        if (bot[l].suit == trump[0].suit) {
+                        if (bot[l].suit == trump[0].suit && table_player[i].suit != trump[0].suit) {
                             min = l;
                             min_card = bot[l].value;
                             for (int f = l; f < size_bot; f++) {
@@ -275,6 +275,19 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                                 {
                                     min = f;
                                     min_card = bot[f].value;
+                                }
+                            }
+                            MoveCard(table_bot, bot, size_table_bot, size_bot, min);
+                            break;
+                        }
+                        else if (bot[l].suit == trump[0].suit && table_player[i].suit == trump[0].suit && bot[l].value > table_player[i].value) {
+                            min = l;
+                            min_card = bot[l].value;
+                            for (int d = l; d < size_bot; d++) {
+                                if (bot[d].suit == trump[0].suit && min_card >= bot[d].value)
+                                {
+                                    min = d;
+                                    min_card = bot[d].value;
                                 }
                             }
                             MoveCard(table_bot, bot, size_table_bot, size_bot, min);
