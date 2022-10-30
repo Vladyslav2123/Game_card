@@ -5,14 +5,13 @@
 #include "Enums.h"
 using namespace std;
 
-void ConsoleCursorVisible(bool show, short size) {
+void ConsoleCursorVisible() {
     CONSOLE_CURSOR_INFO structCursorInfo;
     GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &structCursorInfo);
-    structCursorInfo.bVisible = show;
-    structCursorInfo.dwSize = size;
+    structCursorInfo.bVisible = FALSE;
+    structCursorInfo.dwSize = 99;
     SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &structCursorInfo);
 }
-
 
 int getKey() {
     if (_kbhit()) {
@@ -192,7 +191,9 @@ void saveUser(const User& user) {
     file << user.login << endl;
     file << user.password << endl;
     file << user.game_count << " ";
-    file << user.win_count << " ";
+    file << user.win_game << " ";
+    file << user.lost_game << " ";
+    file << user.nobody_win << " ";
     file.close();
 }
 
@@ -202,7 +203,9 @@ void loadUser(User& user) {
     getline(file, user.login);
     getline(file, user.password);
     file >> user.game_count;
-    file >> user.win_count;
+    file >> user.win_game;
+    file >> user.lost_game;
+    file >> user.nobody_win;
     file.close();
 }
 
@@ -216,7 +219,9 @@ bool userExists(const User& user) {
 User registerNewUser() {
     User user;
     user.game_count = 0;
-    user.win_count = 0;
+    user.win_game = 0;
+    user.lost_game = 0;
+    user.nobody_win = 0;
     string confirmPassword;
     while (true) {
         wcout << "Register new user" << endl;

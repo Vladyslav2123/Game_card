@@ -7,7 +7,7 @@
 #include <ctime>
 #include "Enums.h"
 
-void ConsoleCursorVisible(bool show, short size);
+void ConsoleCursorVisible();
 int getKey();
 
 void SetColor(ConsoleColor text, ConsoleColor background);

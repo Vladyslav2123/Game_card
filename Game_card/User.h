@@ -14,7 +14,9 @@ struct User {
     string password;
     //Data fields...
     int game_count;
-    int win_count;
+    int win_game;
+    int lost_game;
+    int nobody_win;
 };
 
 int Registration_User(User& user);

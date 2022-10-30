@@ -612,7 +612,7 @@ void Game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot,
 
     if (size_player == 0 && size_bot > 0) { // Перемога ігрока
         system("cls");
-        user.win_count++;
+        user.win_game++;
         SetCursorPosition(5, 5);
         wcout << "You WIN! " << endl;
         system("pause");
@@ -620,6 +620,7 @@ void Game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot,
     }
     else if (size_bot == 0 && size_player > 0) { // Перемога бота
         system("cls");
+        user.lost_game++;
         SetCursorPosition(5, 5);
         wcout << "Bot WIN! " << endl;
         system("pause");
@@ -627,6 +628,7 @@ void Game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot,
     }
     else if (size_bot == 0 && size_player == 0) { // Нічия
         system("cls");
+        user.nobody_win++;
         SetCursorPosition(5, 5);
         wcout << "Nobody's WIN! " << endl;
         system("pause");
@@ -636,13 +638,15 @@ void Game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot,
 
 void PrintUser(const User& user) { // Друкування даних про користувача
     const char* str = user.login.c_str();
-    wcout << "Name     : " << str << endl;
-    wcout << "Games    : " << user.game_count << endl;
-    wcout << "Win games: " << user.win_count << endl;
+    wcout << "Name         : " << str << endl;
+    wcout << "Games        : " << user.game_count << endl;
+    wcout << "Win games    : " << user.win_game << endl;
+    wcout << "Lost games   : " << user.lost_game << endl;
+    wcout << "Nobody's WIN : " << user.nobody_win << endl;
 }
 
 int main() {
-    ConsoleCursorVisible(false,100);
+    ConsoleCursorVisible();
     srand(time(NULL));
     int SIZE = 0;
     int size_p = 0;
@@ -653,11 +657,11 @@ int main() {
     User user;
     int menuOption = 0;
     
-    //int registr = Registration_User(user); // Меню регістрації, входу
+    int registr = Registration_User(user); // Меню регістрації, входу
 
-    //if (registr == 2) {
-    //    return 0;
-    //}
+    if (registr == 2) {
+        return 0;
+    }
 
     do {
         SIZE = 36;
