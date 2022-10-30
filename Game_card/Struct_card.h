@@ -1,5 +1,5 @@
 #pragma once
-#pragma once
+#include "Enums.h"
 
 #include <iostream>
 #include <io.h>
@@ -13,3 +13,9 @@ struct Game_card {
 };
 
 Game_card* Desk();
+
+struct Shirt_card {
+    char card ;
+    wchar_t suit ;
+    short color ;
+};
