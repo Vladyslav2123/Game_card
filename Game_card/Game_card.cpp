@@ -49,6 +49,7 @@ void MoveCard(Game_card*& Move_to, Game_card*& Move_from, int& size_to, int& siz
 
     Move_to = arr_to;
     Move_from = arr_from;
+    SetColor(WHITE,BLACK);
 }
 
 void print(const Game_card & ptr, int& value, short width, short height, bool active = false) {  // друкування передньої частини карти
@@ -57,7 +58,7 @@ void print(const Game_card & ptr, int& value, short width, short height, bool ac
     for (int i = width; i < size_small; i++) {
         for (int j = height; j < size_height; j++) {
             
-            SetColor((&ptr)[value].color, active ? GREEN : WHITE);
+            SetColor((&ptr)[value].color, active ? BLUE_FADE : WHITE);
 
             if (i == width && j == height || j == height && i == size_small - 1 || i == width && j == size_height - 1 || i == size_small - 1 && j == size_height - 1) {
                 SetCursorPosition(i, j);
@@ -177,6 +178,7 @@ bool Min_trump(Game_card*& bot, Game_card*& players, Game_card* trump, int& size
 void Print_desk(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot, int& size_player, int& size_deck, Game_card* trump){ // Друкування частини дошки
     int size_trump = 0;
     int x = 0, y = 1;
+    SetColor(WHITE, BLACK);
     SetCursorPosition(55, 15);
     wcout << "Number of card: " << size_deck;
     SetCursorPosition(0, 0);
@@ -193,6 +195,7 @@ void Print_desk(Game_card*& deck, Game_card*& bot, Game_card*& players, int& siz
 
     SetCursorPosition(0, 22);
     wcout << "Bot's card: " << endl;
+    SetColor(WHITE, BLACK);
 }
 
 void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot, int& size_player, int& size_deck, Game_card* trump) { // ХІД ІГРОКА
@@ -230,12 +233,14 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                 }
                 
                 number_of_card = choise(players, size_player);  // вибір карти ігроком
+                
                 if (number_of_card > (size_player-1)) {
+                    SetColor(WHITE, BLACK);
                     goto play;
                 }
 
                 for (i = 0; i < size_table; i++) {
-                    if (players[number_of_card].value != table_player[i].value) { // перевірка, яку карту викинув ігрок на стіл, чи вона не повторяється
+                    if (players[number_of_card].value != table_player[i].value) { // перевірка, яку карту викинув ігрок на стіл, чи карта того ж рангу
                         SetColor(WHITE, BLACK);
                         goto repit;
                     }
@@ -247,11 +252,17 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                     print(*table_player, i, x, y);
                     x += 9;
                 }
+                SetColor(WHITE, BLACK);
             } while (size_player != 0);
         } while (!(size_player != -1));
 
-        play:
+    play:
+        if (size_table == 0) {
+            SetColor(WHITE, BLACK);
+            goto repit;
+        }
         if (size_player != 0 || size_bot != 0) {
+            SetColor(WHITE, BLACK);
             SetCursorPosition(1, 14);  // Відбивання бота
             wcout << "Bot move!";
             
@@ -285,7 +296,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                             MoveCard(table_bot, bot, size_table_bot, size_bot, min);
                             break;
                         }
-                        else if (bot[l].suit == trump[0].suit && table_player[i].suit == trump[0].suit && bot[l].value > table_player[i].value) {
+                        else if (bot[l].suit == trump[0].suit && table_player[i].suit == trump[0].suit && bot[l].value > table_player[i].value) { // перевірка козирної карти відовідно до козирної
                             min = l;
                             min_card = bot[l].value;
                             for (int d = l; d < size_bot; d++) {
@@ -331,7 +342,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
             wcout << "Bot take.";
             system("pause");
             
-            while (size_table != 0 || size_table_bot != 0) {
+            while (size_table != 0 || size_table_bot != 0) {  // переміщення карт з дошки до карт бота
                 MoveCard(bot, table_player, size_bot, size_table, position);
                 if (size_table_bot != 0) {
                     MoveCard(bot, table_bot, size_bot, size_table_bot, position);
@@ -349,11 +360,11 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
             size_table = 0;
             size_table_bot = 0;
             SetColor(WHITE, BLACK);
-            goto new_start;
+            goto new_start;  // бот взяв карти, перехід до ходу ігрока
         }
 
-    end:
-        while (size_player < 6 && size_deck > 0) {
+    end:  // бот відбив карти ігрока, кінець ходу ігрока
+        while (size_player < 6 && size_deck > 0) {  
             MoveCard(players, deck, size_player, size_deck, position);
         }
         while (size_bot < 6 && size_deck > 0) {
@@ -369,7 +380,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
     _getch();
 }
 
-int GoSimpleBot(Game_card *&bot, int & size_bot, Game_card* trump) {
+int GoSimpleBot(Game_card *&bot, int & size_bot, Game_card* trump) { // Функція вибору простої карти бота
     int min = 0;
     int min_card = 0;
     for (int k = 0; k < size_bot; k++) {
@@ -388,7 +399,7 @@ int GoSimpleBot(Game_card *&bot, int & size_bot, Game_card* trump) {
     return min;
 }
 
-int GoTrumpBot(Game_card*& bot, int& size_bot, Game_card* trump) {
+int GoTrumpBot(Game_card*& bot, int& size_bot, Game_card* trump) { // Функція вибору козирної карти бота
     int min = 0;
     int min_card = 0;
     for (int i = 0; i < size_bot; i++) {
@@ -407,7 +418,7 @@ int GoTrumpBot(Game_card*& bot, int& size_bot, Game_card* trump) {
     return min;
 }
 
-void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_bot, int& size_player, int& size_deck, Game_card* trump) {
+void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_bot, int& size_player, int& size_deck, Game_card* trump) {  // ХІД БОТА
     int number_of_card = 0;
     int size_trump = 0;
     int answer = 0;
@@ -434,64 +445,70 @@ void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_b
         for (int i = 0; i < size_bot; i++) { //Вибір ботом простої карти,якою ходити
             if (bot[i].suit != trump[0].suit) {
                 min = GoSimpleBot(bot, size_bot, trump);
-                MoveCard(table_bot, bot, size_table_bot, size_bot, min);
-                for (int k = 0; k < size_bot; k++) {
+                MoveCard(table_bot, bot, size_table_bot, size_bot, min); // визов функції
+                for (int k = 0; k < size_bot; k++) {  // перевірка, чи бот має ще одну карту такого рангу
                     for (int j = 0; j < size_table_bot; j++) {
                         if (bot[k].value == table_bot[j].value) {
                             MoveCard(table_bot, bot, size_table_bot, size_bot, k);
                         }
                     }
                 }
+                if (size_bot == 1 && size_table_bot == 1 && bot[size_trump].card == 'T')
+                {
+                    swap(bot[size_trump], table_bot[size_trump]);
+                }
                 goto end;
             }
         }
-        
+
         min = GoTrumpBot(bot, size_bot, trump);//Вибір ботом козирної карти,якою ходити
         MoveCard(table_bot, bot, size_table_bot, size_bot, min);
-        
-        for (int i = 0; i < size_bot; i++) {
-            for (int j = 0; j < size_table_bot; i++) {
-                if (bot[i].value == table_bot[j].value && size_table_bot > 0) {
-                    MoveCard(table_bot, bot, size_table_bot, size_bot, i);
+
+        if (size_bot == 1 && size_table_bot == 1 && bot[size_trump].card == 'T' && bot[size_trump].suit == trump[size_trump].suit)
+        {
+            swap(bot[size_trump], table_bot[size_trump]);
+        }
+
+    end: // початок вибору карти ігроком
+        do {
+        system("cls");
+        contin = true;
+        Print_desk(deck, bot, player, size_bot, size_player, size_deck, trump);
+        x = 0;
+        for (int i = 0; i < size_table_bot; i++) {
+            print(*table_bot, i, x, 8);
+            x += 9;
+        }
+
+        x = 0;
+        for (int i = 0; i < size_table; i++) {
+            print(*table_player, i, x, 15);
+            x += 9;
+        }
+
+        number_of_card = choise(player, size_player); // вибір карти ігроком
+
+        if (number_of_card > (size_player - 1)) { // якщо ігрок не має чим відбитися, то натискаючи END переходимо до пункту взяття карт
+            SetColor(WHITE, BLACK);
+            goto take;
+        }
+
+        for (int i = 0; i < size_table_bot; i++) { // перевірка чи карта ігрока може побити карту бота
+            if (i == size_table) {
+                if (player[number_of_card].suit == table_bot[i].suit && player[number_of_card].value > table_bot[i].value) {
+                    MoveCard(table_player, player, size_table, size_player, number_of_card);
+                    break;
+                }
+                else if (player[number_of_card].suit == trump[size_trump].suit && table_bot[i].suit != trump[size_trump].suit) {
+                    MoveCard(table_player, player, size_table, size_player, number_of_card);
+                    break;
                 }
             }
         }
 
-    end:
-        do {
-        //start:
-            system("cls");
+        if (size_table != size_table_bot) {
             contin = false;
-            Print_desk(deck, bot, player, size_bot, size_player, size_deck, trump);
-            x = 0;
-            for (int i = 0; i < size_table_bot; i++) {
-                print(*table_bot, i, x, 8);
-                x += 9;
-            }
-            
-            number_of_card = choise(player, size_player);
-            
-            if (number_of_card > (size_player - 1)) {
-                SetColor(WHITE, BLACK);
-                goto take;
-            }
-
-            for (int i = 0; i < size_table_bot; i++) {
-                if (player[number_of_card].suit == table_bot[i].suit && player[number_of_card].value > table_bot[i].value) {
-                    contin = true;
-                    break;
-                }
-                else if (player[number_of_card].suit == trump[size_trump].suit) {
-                    contin = true;
-                    break;
-                }
-            }
-
-            MoveCard(table_player, player, size_table, size_player, number_of_card);
-
-            if (size_table != size_table_bot) {
-                contin = false;
-            }
+        }
             SetColor(WHITE, BLACK);
         } while (!contin);
 
@@ -537,13 +554,14 @@ void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_b
             MoveCard(bot, deck, size_bot, size_deck, size_trump);
         }
 
+
         delete[]table_player;
         delete[]table_bot;
         size_table = 0;
         size_table_bot = 0;
-        goto start_game;
+        goto start_game; // Якшо ігрок взяв карти, перехід до нового ходу бота
 
-    end_game:
+    end_game: // кінець ходу бота
         delete[]table_player;
         delete[]table_bot;
         size_table = 0;
@@ -565,7 +583,7 @@ void Game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot,
         MoveCard(bot, deck, size_bot, size_deck, position); // Роздача карт боту
     }
     
-    bool good = Min_trump(bot, players, trump, size_bot, size_player);
+    bool good = Min_trump(bot, players, trump, size_bot, size_player); // Функція вибору , хто ходить першим
 
     if (good) {
         do {
@@ -592,7 +610,7 @@ void Game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot,
         } while (size_bot > 0 && size_player > 0);
     }
 
-    if (size_player == 0 && size_bot > 0) {
+    if (size_player == 0 && size_bot > 0) { // Перемога ігрока
         system("cls");
         user.win_count++;
         SetCursorPosition(5, 5);
@@ -600,14 +618,14 @@ void Game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& size_bot,
         system("pause");
         _getch();
     }
-    else if (size_bot == 0 && size_player > 0) {
+    else if (size_bot == 0 && size_player > 0) { // Перемога бота
         system("cls");
         SetCursorPosition(5, 5);
         wcout << "Bot WIN! " << endl;
         system("pause");
         _getch();
     }
-    else if (size_bot == 0 && size_player == 0) {
+    else if (size_bot == 0 && size_player == 0) { // Нічия
         system("cls");
         SetCursorPosition(5, 5);
         wcout << "Nobody's WIN! " << endl;
@@ -631,13 +649,15 @@ int main() {
     int size_b = 0;
     const int t = 1;
     _setmode(_fileno(stdout), _O_U16TEXT);
+    
     User user;
     int menuOption = 0;
-    /*int registr = Registration_User(user);
+    
+    //int registr = Registration_User(user); // Меню регістрації, входу
 
-    if (registr == 2) {
-        return 0;
-    }*/
+    //if (registr == 2) {
+    //    return 0;
+    //}
 
     do {
         SIZE = 36;

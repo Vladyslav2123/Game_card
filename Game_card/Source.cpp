@@ -40,7 +40,7 @@ void SetCursorPosition(short x, short y) {
 
 void setMenuRowColor(const bool isActive) {
     if (isActive) {
-        SetColor(BLACK, GREEN_FADE);
+        SetColor(BLACK, BLUE_FADE);
     }
     else {
         SetColor(RED, WHITE);
@@ -52,7 +52,7 @@ void drawFrame(short height, short width) {
         for (short x = 32; x < width; x++) {
             if (x == 32 || y == 8 || x == width - 1 || y == height - 1) {
                 SetCursorPosition(x, y);
-                SetColor(RED, WHITE);
+                SetColor(BLUE_FADE, WHITE);
                 wcout << "*";
             }
         }
