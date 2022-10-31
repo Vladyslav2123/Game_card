@@ -59,7 +59,7 @@ void print(const T &ptr, int &value, short width, short height, bool active = fa
     for (int i = width; i < size_small; i++) {
         for (int j = height; j < size_height; j++) {
             
-            SetColor((&ptr)[value].color, active ? YELLOW : WHITE);
+            SetColor((&ptr)[value].color, active ? GREEN : WHITE);
 
             if (i == width && j == height || j == height && i == size_small - 1 || i == width && j == size_height - 1 || i == size_small - 1 && j == size_height - 1) {
                 SetCursorPosition(i, j);
