@@ -247,6 +247,10 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                     goto play;
                 }
 
+                if (size_table == size_bot) {
+                    goto repit;
+                }
+
                 for (i = 0; i < size_table; i++) {
                     if (players[number_of_card].value != table_player[i].value) { // перевірка, яку карту викинув ігрок на стіл, чи карта того ж рангу
                         SetColor(WHITE, BLACK);
@@ -447,10 +451,20 @@ void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_b
             if (bot[i].suit != trump[0].suit) {
                 min = GoSimpleBot(bot, size_bot, trump);
                 MoveCard(table_bot, bot, size_table_bot, size_bot, min); // визов функції
+                if (size_bot == 1 && size_table_bot == 1 && bot[size_trump].card == 'T')
+                {
+                    swap(bot[size_trump], table_bot[size_trump]);
+                }
+                if (size_table_bot == size_player) {
+                    goto end;
+                }
                 for (int k = 0; k < size_bot; k++) {  // перевірка, чи бот має ще одну карту такого рангу
                     for (int j = 0; j < size_table_bot; j++) {
                         if (bot[k].value == table_bot[j].value) {
                             MoveCard(table_bot, bot, size_table_bot, size_bot, k);
+                            if (size_table_bot == size_player) {
+                                goto end;
+                            }
                         }
                     }
                 }
@@ -464,11 +478,6 @@ void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_b
 
         min = GoTrumpBot(bot, size_bot, trump);//Вибір ботом козирної карти,якою ходити
         MoveCard(table_bot, bot, size_table_bot, size_bot, min);
-
-        if (size_bot == 1 && size_table_bot == 1 && bot[size_trump].card == 'T' && bot[size_trump].suit == trump[size_trump].suit)
-        {
-            swap(bot[size_trump], table_bot[size_trump]);
-        }
 
     end: // початок вибору карти ігроком
         do {
@@ -512,11 +521,15 @@ void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_b
         }
             SetColor(WHITE, BLACK);
         } while (!contin);
-
+        system("cls");
         Print_desk(shirt, player, size_bot, size_player, size_deck, trump);
             SetCursorPosition(15, 14);
             wcout << "Your move! ";
-            
+            x = 0;
+            for (int i = 0; i < size_table_bot; i++) {
+                print(*table_bot, i, x, 8);
+                x += 9;
+            }
             x = 0;
             for (int i = 0; i < size_table; i++) {
                 print(*table_player, i, x, 15);

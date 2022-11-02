@@ -48,8 +48,8 @@ void setMenuRowColor(const bool isActive) {
 
 void drawFrame(short height, short width) {
     for (short y = 8; y < height; y++) {
-        for (short x = 32; x < width; x++) {
-            if (x == 32 || y == 8 || x == width - 1 || y == height - 1) {
+        for (short x = 62; x < width; x++) {
+            if (x == 62 || y == 8 || x == width - 1 || y == height - 1) {
                 SetCursorPosition(x, y);
                 SetColor(BLUE_FADE, WHITE);
                 wcout << "*";
@@ -60,7 +60,7 @@ void drawFrame(short height, short width) {
 }
 
 void drawMenu(const int& activeOption) {
-    short x = 35;
+    short x = 65;
     short y = 10;
     SetCursorPosition(x, y++);
     setMenuRowColor(activeOption == 0);
@@ -75,7 +75,7 @@ void drawMenu(const int& activeOption) {
 }
 
 void drawregistration(const int& activeOption) {
-    short x = 35;
+    short x = 65;
     short y = 10;
     SetCursorPosition(x, y++);
     setMenuRowColor(activeOption == 0);
@@ -94,7 +94,7 @@ int startMenu() {
     int key;
     int activeOption = 0;
     drawMenu(activeOption);
-    drawFrame(15, 47);
+    drawFrame(15, 77);
     while (true)
     {
         key = getKey();
@@ -128,7 +128,7 @@ int startLOG() {
     int key;
     int activeOption = 0;
     drawregistration(activeOption);
-    drawFrame(15, 47);
+    drawFrame(15, 77);
     while (true)
     {
         key = getKey();
