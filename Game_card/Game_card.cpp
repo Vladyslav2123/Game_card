@@ -704,11 +704,10 @@ int main() {
             desk = Desk();
             Shuffle(*desk, SIZE);
             trump[0] = desk[SIZE - 1];
-
             user.game_count++;
-            saveUser(user);
             Game(desk, bot, player, size_b, size_p, SIZE, trump, user, *shirt);
-            
+            saveUser(user);
+
             delete[]desk;
             delete[]player;
             delete[]bot;
