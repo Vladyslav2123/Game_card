@@ -293,7 +293,7 @@ void Player_game(Game_card*& deck, Game_card*& bot, Game_card*& players, int& si
                         break;
                     }
                 }
-                if (i == size_table_bot) {
+                if (i == size_table_bot && size_deck < 16) {
                     for (int l = 0; l < size_bot; l++) {
                         if (bot[l].suit == trump[0].suit && table_player[i].suit != trump[0].suit) { // перевірка на наявність козирної карти
                             min = l;
@@ -448,7 +448,7 @@ void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_b
         wcout << "Bot move!";
         
         for (int i = 0; i < size_bot; i++) { //Вибір ботом простої карти,якою ходити
-            if (bot[i].suit != trump[0].suit) {
+            if (bot[i].suit != trump[size_trump].suit) {
                 min = GoSimpleBot(bot, size_bot, trump);
                 MoveCard(table_bot, bot, size_table_bot, size_bot, min); // визов функції
                 if (size_bot == 1 && size_table_bot == 1 && bot[size_trump].card == 'T')
@@ -460,7 +460,13 @@ void Bot_game(Game_card*& deck, Game_card*& bot, Game_card*& player, int& size_b
                 }
                 for (int k = 0; k < size_bot; k++) {  // перевірка, чи бот має ще одну карту такого рангу
                     for (int j = 0; j < size_table_bot; j++) {
-                        if (bot[k].value == table_bot[j].value) {
+                        if (bot[k].value == table_bot[j].value && bot[k].suit != trump[size_trump].suit) {
+                            MoveCard(table_bot, bot, size_table_bot, size_bot, k);
+                            if (size_table_bot == size_player) {
+                                goto end;
+                            }
+                        }
+                        else if (bot[k].value == table_bot[j].value && size_deck < 12) {
                             MoveCard(table_bot, bot, size_table_bot, size_bot, k);
                             if (size_table_bot == size_player) {
                                 goto end;
@@ -619,7 +625,8 @@ void Game(Game_card *&deck, Game_card *&bot, Game_card *&players, int &size_bot,
     if (size_player == 0 && size_bot != 0) { // Перемога ігрока
         system("cls");
         user.win_game++;
-        SetCursorPosition(5, 5);
+        SetCursorPosition(65, 10);
+        SetColor(BLUE_FADE, BLACK);
         wcout << "You WIN! " << endl;
         system("pause");
         _getch();
@@ -627,7 +634,8 @@ void Game(Game_card *&deck, Game_card *&bot, Game_card *&players, int &size_bot,
     else if (size_bot == 0 && size_player != 0) { // Перемога бота
         system("cls");
         user.lost_game++;
-        SetCursorPosition(5, 5);
+        SetColor(BLUE_FADE, BLACK);
+        SetCursorPosition(65, 10);
         wcout << "Bot WIN! " << endl;
         system("pause");
         _getch();
@@ -635,7 +643,8 @@ void Game(Game_card *&deck, Game_card *&bot, Game_card *&players, int &size_bot,
     else if (size_bot == 0 && size_player == 0) { // Нічия
         system("cls");
         user.nobody_win++;
-        SetCursorPosition(5, 5);
+        SetColor(BLUE_FADE, BLACK);
+        SetCursorPosition(65, 10);
         wcout << "Nobody's WIN! " << endl;
         system("pause");
         _getch();
